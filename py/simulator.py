@@ -33,12 +33,11 @@ def call(a_address, b_address, a_ai, b_ai, start_gas):
     def validate_move(grid, from_cell, to_cell, fuel):
         # check within grid
         if from_cell < ncells:
-            if to_cell < len(grid):
+            if to_cell < ncells:
                 # enough fuel there
                 if fuel <= grid[from_cell]:
                     # check neighbour
-                    #print get_neighbours(from_cell, cols, rows)
-                    if is_neighbour(from_cell, to_cell) or from_cell == to_cell:
+                    if is_neighbour(from_cell, to_cell):
                         return True
         return False
 
@@ -55,15 +54,10 @@ def call(a_address, b_address, a_ai, b_ai, start_gas):
             debug_callback(sim_steps, cols, rows, a_grid, b_grid, redistribution_grid)
 
         total_at_start = total()
-        # get moves from contracts
-        # move =(from_cell, to_cell, fuel)
-
         redistribution = 0
 
         for ai, grid, other_grid, fuel in ((a_ai, a_grid, b_grid, a_fuel), (b_ai, b_grid, a_grid[:], b_fuel)): # copy a_grid for 2nd call
             gas_used, move_from, move_to, move_amount = ai(seed, cols, rows, grid, other_grid)
-
-            # print player_tx, gas_used, move_from, move_to, move_amount
 
             total_gas_used += gas_used
             if move_amount and not validate_move(grid, move_from, move_to, move_amount):
@@ -76,15 +70,11 @@ def call(a_address, b_address, a_ai, b_ai, start_gas):
 
             # remove gas and redistribution
             for i in range(ncells):
-                assert grid[i] >= 0
                 cell_fuel = grid[i]
-                assert fuel >= 0
                 redistribution_allowance = cell_fuel / inv_redistribution_factor
                 gas_allowance = (sim_step_gas / 2 + gas_used) * cell_fuel / fuel
-                grid[i] = max(0, cell_fuel - gas_allowance - redistribution_allowance) # MAX for rounding errors
+                grid[i] = max(0, cell_fuel - gas_allowance - redistribution_allowance)
                 redistribution = redistribution + redistribution_allowance
-                assert grid[i] <= cell_fuel
-                assert grid[i] >= 0
 
 
         # handle collisions
@@ -95,21 +85,9 @@ def call(a_address, b_address, a_ai, b_ai, start_gas):
                 else:
                     l, g = a_grid, b_grid
                 d = g[i] - l[i]
-                assert d >= 0
-                if g[i] < d:
-                    print g[i], l[i], d
-                assert g[i] >= d
                 g[i] -= d
-                assert g[i] >= 0
                 l[i] = 0
-                redistribution = redistribution + d
-
-
-        # redistribution: constant, galcon style
-        assert total_at_start > total() + redistribution
-
-        #redistribution = 0
-        pre_redistribution_total = total()
+                redistribution += d
 
         a_fuel = 0
         b_fuel = 0
@@ -122,11 +100,9 @@ def call(a_address, b_address, a_ai, b_ai, start_gas):
                 a_grid[i] += add
             if b_grid[i]:
                 b_grid[i] += add
-
             a_fuel += a_grid[i]
             b_fuel += b_grid[i]
 
-        assert total() - pre_redistribution_total <= redistribution
         assert total_at_start > total()
 
         sim_step_gas = 3000 # guess
