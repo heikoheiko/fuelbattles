@@ -1,3 +1,5 @@
+# not really py.test but used for testing while development
+
 from testenv import tester
 from testenv import run, logger
 

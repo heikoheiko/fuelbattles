@@ -1,3 +1,7 @@
+"""
+Uses the processblock loghandler to intercept debug messages from within runing EVM code
+use with debug.se, linked by 0xdeba6 in the first word of call data going to debug.se
+"""
 import os
 import string
 import pyethereum

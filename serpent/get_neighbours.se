@@ -1,3 +1,6 @@
+# return the  max 4 neigbours of a cell and their number
+# returns [num_neighbours, n0, n1 ...]
+# always returns 5 words
 hood = [0] * 5
 a_cell = msg.data[0]
 cols = msg.data[1]

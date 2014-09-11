@@ -1,10 +1,11 @@
 # The Organizer sets up the challenge
 # 1st TX defines t
-#  the stake
-#  the gas available for the challenge
+#  the stake necesary for the challenge
+#  the gas necesary for the challenge
 # 2nd TX
 #  matches the stake and
 #  provides all the required gas (challange gas + setup gas)
+#  sender is refunded the gas cost (i.e. OOG should not happen)
 init:
     contract.storage[1000] = create('simulation.se')
 code:

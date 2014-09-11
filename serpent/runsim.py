@@ -1,3 +1,4 @@
+# execute this to run a battle
 from testenv import tester
 from testenv import run, logger
 tester.gas_limit = 10**5 - 10**4
@@ -21,7 +22,6 @@ def run_simulation():
     except Exception, e:
         print '\n'.join(repr(x) for x in logger.get_history(1))
         raise e
-
 
 if __name__ == '__main__':
     run_simulation()

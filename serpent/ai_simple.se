@@ -1,4 +1,5 @@
 # ai_simple: conquers the best reachable fuel redistributing cells
+# setup by a player, sent to the organizer and called by the simulation
 init:
      contract.storage[1000] = create('get_neighbours.se')
      contract.storage[1002] = create('debug.se')

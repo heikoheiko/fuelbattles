@@ -1,3 +1,4 @@
+# returns 1 if a_cell is within the 4 possible neigbours of b_cells
 a_cell = msg.data[0]
 b_cell = msg.data[1]
 cols = msg.data[2]

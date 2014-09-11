@@ -1,3 +1,4 @@
+# sets and updates the stage on which the two AIs are battling
 init:
      contract.storage[1001] = create('is_neighbour.se')
      contract.storage[1002] = create('debug.se')
