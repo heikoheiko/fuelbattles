@@ -1,0 +1,212 @@
+init:
+     contract.storage[1001] = create('is_neighbour.se')
+     contract.storage[1002] = create('debug.se')
+     contract.storage[1003] = create('quicksort_pairs.se')
+code:
+    start_gas = tx.gas
+
+    # args
+    # msg.datasize == 2
+    a_ai_address = msg.data[0]
+    b_ai_address = msg.data[1]
+
+
+    # params
+    inv_redistribution_factor = 25
+    cols = 4
+    rows = 4
+    ncells = cols * rows
+    is_neighbour = contract.storage[1001]
+    debug = contract.storage[1002]
+    quicksort_pairs = contract.storage[1003]
+
+    call(debug, ["init redistribution_grid", tx.gas], 2)
+    #redistribution_grid = [0] * ncells # <- this failed!
+    redistribution_grid = array(ncells)
+    # redistribution_grid : value at cell index
+
+
+    # setup memory which can easily be shared with the ai contracts
+    # [cols, rows, a_ai, b_ai] + [a_grid] + [b_grid] + [redist_sorted(value, idx)]
+    wordsize = 32
+    memory_length = (4 + 4 * ncells )
+    memory = [0] * memory_length
+    memory[0] = cols
+    memory[1] = rows
+    memory[2] = a_ai_address
+    memory[3] = b_ai_address
+
+    # setup player grids
+    a_grid = memory + 4 * wordsize
+    b_grid = memory + (4 + ncells) * wordsize
+
+    # setup redistribution grid
+    redist_sorted = memory + (4 + 2 * ncells) * wordsize
+    # redist_sorted = [value, cell, value, cell, ...]
+    seed = sha3(block.timestamp + block.prevhash + block.coinbase)
+    i = 0
+    while i < ncells/2:
+        v = (seed / (i+1) % 256)
+        redistribution_grid[i] = v
+        redist_sorted[i*2] = v
+        redist_sorted[i*2+1] = i
+        # mirrored
+        redistribution_grid[ncells - i -1] = v
+        redist_sorted[ncells * 2 - (i+1)*2] = v
+        redist_sorted[ncells * 2 - (i+1)*2 + 1] = ncells - i - 1
+        i += 1
+    call(debug, redistribution_grid, ncells)
+
+    # sorted for ais convenience (there is a bug in quicksort pairs!)
+    call(debug, ["sorting redist_sorted", tx.gas], 2)
+
+    sg = call(quicksort_pairs, redist_sorted, ncells*2, ncells*2)
+    i = 0
+    while i < ncells:
+        v = sg[i * 2]
+        c = sg[i * 2 + 1]
+        redist_sorted[i * 2] = v
+        redist_sorted[i * 2 + 1] = c
+        i += 1
+
+    # place initial fuel
+    a_fuel = tx.gas / 2
+    b_fuel = tx.gas / 2
+
+    pos = seed % (ncells / 2)
+    a_grid[pos] = a_fuel
+    b_grid[ncells - pos - 1] = b_fuel
+
+
+    call(debug, ["sim is set up", tx.gas], 2)
+    call(debug, memory, memory_length)
+
+    sim_steps = 0
+    sim_step_gas_used = start_gas - tx.gas # gas the simulator used
+    # end if one ran out of gas or half of start_gas is used
+    while a_fuel > 0 and b_fuel > 0:
+        sim_step_start_gas = tx.gas
+        total_at_start = a_fuel + b_fuel
+        redistribution = 0 # value that is collected and redistributed
+        sim_steps += 1
+
+        # call ais
+        gas = tx.gas
+
+        # a_move = [move_from, move_to, move_amount]
+        call(debug, ["calling ai_a", tx.gas], 2)
+        a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
+        call(debug, a_move, 3)
+        a_ai_gas_used = gas - tx.gas
+        call(debug, ["ai_a move g,f,t,v", a_ai_gas_used, a_move[0], a_move[1], a_move[2]], 5)
+
+        call(debug, ["calling ai_b", tx.gas], 2)
+        b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
+        b_ai_gas_used = gas - tx.gas - a_ai_gas_used
+        call(debug, ["ai_b move g,f,t,v", b_ai_gas_used, b_move[0], b_move[1], b_move[2]], 5)
+
+        player_data = [[a_grid, a_move, a_ai_gas_used, a_fuel], [b_grid, b_move, b_ai_gas_used, b_fuel]]
+
+        player = 0
+        while player < 2:
+            call(debug, ["with player", player], 2)
+            grid = player_data[player][0]
+            move = player_data[player][1]
+            ai_gas_used = player_data[player][2]
+            fuel = player_data[player][3]
+            move_from = move[0]
+            move_to = move[1]
+            move_amount= move[2]
+
+            call(debug, ["validate + move", tx.gas], 2)
+            #call(debug, grid, ncells)
+            # validate + move
+            if move_amount and move_from < ncells and move_to < ncells and grid[move_from] >= move_amount:
+                if call(is_neighbour, move_from, move_to):
+                    grid[move_from] = grid[move_from] - move_amount
+                    grid[move_to] = grid[move_to] + move_amount
+            else:
+                call(debug, ['invalid move', move_from, move_to, move_amount], 4)
+            #call(debug, grid, ncells)
+
+            # remove gas and redistribution
+            call(debug, ["substracting gas + redist", tx.gas], 2)
+            player_gas_allowance = (sim_step_gas_used / 2 + ai_gas_used)
+            i = 0
+            while i < ncells:
+                cell_fuel = grid[i]
+                redistribution_allowance = cell_fuel / inv_redistribution_factor
+                redistribution += redistribution_allowance
+                gas_allowance = player_gas_allowance * cell_fuel / fuel
+                v = cell_fuel - gas_allowance - redistribution_allowance
+                if v <0 :
+                    v = 0
+                grid[i] = v
+                i += 1
+            #call(debug, grid, ncells)
+
+            player +=1
+
+        # handle collisions, destroyed fuel is redistributed
+        call(debug, ["handling collsions", tx.gas], 2)
+        i = 0
+        while i < ncells:
+            if a_grid[i] and b_grid[i]:
+                d = a_grid[i] - b_grid[i]
+                if d > 0:
+                    a_grid[i] = a_grid[i] - d
+                    b_grid[i] = 0
+                else:
+                    b_grid[i] = b_grid[i] - d
+                    a_grid[i] = 0
+                redistribution += d
+            i += 1
+
+        # normalize redistribution by occupied values on grid
+        call(debug, ["normalizing redistributions", tx.gas], 2)
+        norm = 0
+        i = 0
+        while i < ncells:
+            if a_grid[i] or b_grid[i]:
+                norm += redistribution_grid[i]
+            i += 1
+        redistribution /= norm
+
+        # redistribute fuel
+        call(debug, ["redistribute", tx.gas], 2)
+        a_fuel = 0
+        b_fuel = 0
+        i = 0
+        #call(debug, a_grid, ncells)
+        #call(debug, redistribution_grid, ncells)
+        while i < ncells:
+            add = redistribution * redistribution_grid[i]
+            #call(debug, ["add redist", i, add,  a_grid[i], b_grid[i]], 5)
+            if a_grid[i]:
+                a_grid[i] += add
+                a_fuel += add
+            if b_grid[i]:
+                b_grid[i] += add
+                b_fuel += add
+            i += 1
+
+        call(debug, ["done redist", tx.gas], 2)
+
+        #assert total_at_start > total()
+        if total_at_start < a_fuel + b_fuel:
+            call(debug, ['fuel now > start', a_fuel + b_fuel, total_at_start], 3)
+
+        sim_step_gas_used = sim_step_start_gas - tx.gas - a_ai_gas_used - b_ai_gas_used
+
+        call(debug, ['gas used: sim|a|b|left', sim_step_gas_used, a_ai_gas_used, b_ai_gas_used, tx.gas], 5)
+        call(debug, ['gas left: a|b|tx:', a_fuel, b_fuel, tx.gas], 4)
+        call(debug, ['sim_step', sim_steps], 2)
+
+    call(debug, ['gas left: a|b|tx:', a_fuel, b_fuel, tx.gas], 4)
+    # end while loop
+    if a_fuel > b_fuel:
+        winner = a_ai_address
+    else:
+        winner = b_ai_address
+    return(winner)
+

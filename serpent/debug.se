@@ -1,0 +1,15 @@
+# send debug data here
+# testenv.py will log a line:
+# DEBUG 'string_key': value0, value1, ...
+#
+# usage:
+#   call(debug, ["string_key", [value, ...] ], 2)
+
+a = [0] * (msg.datasize + 1)
+i = 0
+a[i] = 0xdeba6 # identifier
+while i < msg.datasize:
+
+    a[i+1] = msg.data[i]
+    i+=1
+return(a, msg.datasize + 1)

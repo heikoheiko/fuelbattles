@@ -1,0 +1,61 @@
+# ai_simple: conquers the best reachable fuel redistributing cells
+init:
+     contract.storage[1000] = create('get_neighbours.se')
+     contract.storage[1002] = create('debug.se')
+code:
+    #msg.data = [cols, rows, a_ai, b_ai] + [a_grid] + [b_grid] + [sorted_redistribution_grid]
+    cols = msg.data[0]
+    rows = msg.data[1]
+    ncells = cols * rows
+    a_ai_address = msg.data[2]
+    b_ai_address = msg.data[3]
+
+    get_neighbours = contract.storage[1000]
+    debug = contract.storage[1002]
+    call(debug, ["start", tx.gas], 2)
+
+    # check for own grid start in msg.data
+    if a_ai_address == contract.address: # 1st
+        grid_offset = 4
+        other_grid_offset = 4 + ncells
+        call(debug, ["ai is A", tx.gas], 2)
+    else: # 2nd
+        call(debug, ["ai is B", tx.gas], 2)
+        grid_offset = 4 + ncells
+        other_grid_offset = 4
+
+    redistribution_grid_offset = 4 + 2 * ncells
+
+    i = ncells
+    while i > 0: # sorted lower to higher
+        i -= 1
+        cell = msg.data[redistribution_grid_offset + i*2 + 1]
+        value = msg.data[redistribution_grid_offset + i*2]
+        if value: # quick_sort bug
+            call(debug, ["candidate", i, cell, value], 4)
+            if !msg.data[grid_offset + cell]: # not here yet
+                # check if it's reachable
+                neighbours = call(get_neighbours, [cell, cols, rows], 3, 5)
+                num_neighbours = neighbours[0]
+                j = 0
+                call(debug, ["neighbours", num_neighbours,neighbours[0],neighbours[1],neighbours[2],neighbours[3]], 6)
+                while j < num_neighbours:
+                    pos = neighbours[j+1]
+                    fuel = msg.data[grid_offset + pos]
+                    #call(debug, ["check", pos, fuel], 3)
+                    if fuel > 1: # i.e 2
+                        # move half of funds at cell
+                        move = [pos, cell, fuel/2]
+                        call(debug, ["found move:"], 1)
+                        call(debug, move, 3)
+                        return(move, 3)
+                    j += 1
+
+    #  none move
+    #return([0,0,0], 3)
+    return(array(3), 3)
+
+
+
+
+

@@ -1,0 +1,58 @@
+# The Organizer sets up the challenge
+# 1st TX defines t
+#  the stake
+#  the gas available for the challenge
+# 2nd TX
+#  matches the stake and
+#  provides all the required gas (challange gas + setup gas)
+init:
+    contract.storage[1000] = create('simulation.se')
+code:
+    # msg.data = [ai_address, sim_gas]]
+
+    initial_gas = tx.gas
+
+    if msg.datasize != 2:
+        return(0)
+
+    # A (1st) TX
+    if contract.storage[0] == 0:
+        # store until we have a second tx
+        contract.storage[0] = msg.sender # sender address
+        contract.storage[1] = msg.value # sender value
+        contract.storage[2] = msg.data[0] # ai address
+        contract.storage[3] = msg.data[1] # simulation gas
+        return(1)
+
+    # B (2nd) TX
+    # stakes must match and enough gas must be provided
+    if (msg.value != contract.storage[1]) or (initial_gas < contract.storage[3] + 1000):
+        # refund
+        send(msg.sender, msg.data[1])
+        send(contract.storage[0], contract.storage[1])
+        contract.storage[0] = 0
+        return(2)
+
+    # call simulation
+    a_ai_address = contract.storage[2]
+    b_ai_address = msg.data[0]
+
+    calldata = [a_ai_address, b_ai_address]
+    winning_ai_address = call(contract.storage[1000], calldata, 2)
+
+    gas_cost = (initial_gas - msg.gas) * tx.gasprice
+
+    # B (2nd) TX provided the gas for the game -> refund gas_cost
+    send(msg.sender, gas_cost)
+
+    # send (both stakes - gas_cost) to winner
+    if winning_ai_address == msg.data[0]:
+        winning_address = msg.sender
+    else:
+        winning_address = contract.storage[0]
+    send(winning_address, contract.balance)
+
+    # clear storage from tx1
+    contract.storage[0] = 0
+
+    return(winning_address)

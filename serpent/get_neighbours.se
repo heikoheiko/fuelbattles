@@ -1,0 +1,25 @@
+hood = [0] * 5
+a_cell = msg.data[0]
+cols = msg.data[1]
+rows = msg.data[2]
+
+a_col = a_cell % cols
+a_row = a_cell / cols
+
+i = 0
+if a_row > 0:
+    hood[i+1] = a_cell - cols
+    i += 1
+if a_row < rows - 1:
+    hood[i+1] = a_cell + cols
+    i += 1
+if a_col > 0:
+    hood[i+1] = a_cell - 1
+    i += 1
+if a_col < cols -1:
+    hood[i+1] = a_cell + 1
+    i += 1
+hood[0] = i
+
+# [num_neighbours, n0, n1, ..]
+return(hood, 5)
