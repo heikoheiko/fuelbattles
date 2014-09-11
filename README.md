@@ -9,6 +9,22 @@ Fuel Battles is a challenge which mirrors the '*computation comes at a cost*' as
 Game Mechanics
 --------------
 
+```
+B61| B27| B10| B18| B14| B 6|
+-----------------------------
+B74| B14| B18| B 9| B34| B10|
+-----------------------------
+B55|      B 5| A 4| A99| A80|
+-----------------------------
+B28| B51| B13| A11|      B18|
+-----------------------------
+B20| B61| B25| B 9| B 7| B31|
+-----------------------------
+B17| B33| B22| B 9| B18| B30|
+----------------------------
+```
+*The Stage: A 6x6 grid, displaying the amount of fuel the owners (A,B) have at each cell*
+
 The game takes place on a NxM grid and is about amounting 'fuel', which can be accumulated by occupying cells on the grid. But calculating the next turn also costs fuel. 
 
 The fuel in the game is initially equal the gas provided by the calling transaction. It is reduced each turn by the amount of gas necessary to compute the next step. 
