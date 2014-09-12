@@ -154,6 +154,11 @@ The current implementation has an opinionated approach which prefers convenience
 The implementation is neither optimized for CPU nor memory efficiency yet. These would come at the cost of simplicity and code readability, but might be worthwhile in the future to have more gas available to the AIs.
 
 
+Is this somehow useful?
+-----------------------
 
+The current implementation was written as my first exercise in writing contracts for Ethereum and is still limited.
+
+But in the future it could be extended to serve as a trust free environment in which confident developers could enter a trial of strength and place bets on their AI implementations.
 
 
