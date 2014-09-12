@@ -1,4 +1,4 @@
-sha3
+pysha3
 colorconsole
 pyethereum
 ethereum-serpent
