@@ -44,8 +44,8 @@ class Logger(object):
 
     def format_msg(self, data, label='MSG'):
         if data['to'] != self.debug_contract:
-            sender = self.name(data['sender'])
-            to = self.name(data['to'])
+            sender = self.name(data.get('sender', ''))
+            to = self.name(data.get('to', ''))
             print '%s:\t%r > %r: v:%r gas:%r' %(label, sender, to, data['value'], data['gas'])
 
     def format_tx(self, data):
