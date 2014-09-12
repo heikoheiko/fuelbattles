@@ -3,6 +3,7 @@ init:
      contract.storage[1001] = create('is_neighbour.se')
      contract.storage[1002] = create('debug.se')
      contract.storage[1003] = create('quicksort_pairs.se')
+     contract.storage[1004] = create('report.se')
 code:
     start_gas = tx.gas
 
@@ -20,6 +21,7 @@ code:
     is_neighbour = contract.storage[1001]
     debug = contract.storage[1002]
     quicksort_pairs = contract.storage[1003]
+    report = contract.storage[1004]
 
     call(debug, ["init redistribution_grid", tx.gas], 2)
     #redistribution_grid = [0] * ncells # <- this failed!
@@ -90,6 +92,7 @@ code:
     b_move = array(3)
 
     while a_fuel > 0 and b_fuel > 0:
+        call(report, memory, memory_length)
         sim_step_start_gas = tx.gas
         total_at_start = a_fuel + b_fuel
         redistribution = 0 # value that is collected and redistributed
@@ -127,8 +130,8 @@ code:
             move_to = move[1]
             move_amount= move[2]
 
-            call(debug, ["validate + move", tx.gas], 2)
-            #call(debug, grid, ncells)
+            call(debug, ["validate + move", move_from, move_to, move_amount], 4)
+            call(report, memory, memory_length)
             # validate + move
             if move_amount and move_from < ncells and move_to < ncells and grid[move_from] >= move_amount:
                 if call(is_neighbour, move_from, move_to):
@@ -138,7 +141,8 @@ code:
                     call(debug, ['no neighbour', move_from, move_to, move_amount], 4)
             else:
                 call(debug, ['invalid move', move_from, move_to, move_amount], 4)
-            #call(debug, grid, ncells)
+
+            call(report, memory, memory_length)
 
             # remove gas and redistribution
             call(debug, ["substracting gas + redist", tx.gas], 2)
@@ -154,8 +158,7 @@ code:
                     v = 0
                 grid[i] = v
                 i += 1
-            #call(debug, grid, ncells)
-
+            call(report, memory, memory_length)
             player +=1
 
         # handle collisions, destroyed fuel is redistributed
@@ -172,6 +175,7 @@ code:
                     a_grid[i] = 0
                 redistribution += d
             i += 1
+        call(report, memory, memory_length)
 
         # normalize redistribution by occupied values on grid
         call(debug, ["normalizing redistributions", tx.gas], 2)
@@ -201,7 +205,8 @@ code:
                 b_fuel += add
             i += 1
 
-        call(debug, ["done redist", tx.gas], 2)
+        call(debug, ["done redist"], 1)
+        call(report, memory, memory_length)
 
         #assert total_at_start > total()
         if total_at_start < a_fuel + b_fuel:
@@ -211,13 +216,15 @@ code:
 
         call(debug, ['gas used: sim|a|b|left', sim_step_gas_used, a_ai_gas_used, b_ai_gas_used, tx.gas], 5)
         call(debug, ['gas left: a|b|tx:', a_fuel, b_fuel, tx.gas], 4)
-        call(debug, ['sim_step', sim_steps], 2)
+        call(report, memory, memory_length)
+        call(debug, ['----END-STEP----', sim_steps], 2)
 
-    call(debug, ['gas left: a|b|tx:', a_fuel, b_fuel, tx.gas], 4)
+
     # end while loop
     if a_fuel > b_fuel:
         winner = a_ai_address
     else:
         winner = b_ai_address
+    call(debug, ['----END-SIM----', winner], 2)
     return(winner)
 

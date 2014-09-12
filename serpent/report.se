@@ -1,0 +1,29 @@
+# calls debug with the fuel sum on the grids of both ais
+init:
+     contract.storage[1002] = create('debug.se')
+code:
+    #msg.data = [cols, rows, a_ai, b_ai] + [a_grid] + [b_grid] + [sorted_redistribution_grid]
+    cols = msg.data[0]
+    rows = msg.data[1]
+    ncells = cols * rows
+    a_ai_address = msg.data[2]
+    b_ai_address = msg.data[3]
+    debug = contract.storage[1002]
+
+    # A
+    grid_offset = 4
+    fuel_a = 0
+    i = 0
+    while i < ncells:
+        fuel_a += msg.data[grid_offset + i]
+        i += 1
+    # B
+    grid_offset = 4 + ncells
+    fuel_b = 0
+    i = 0
+    while i < ncells:
+        fuel_b += msg.data[grid_offset + i]
+        i += 1
+
+    call(debug, ["fuels A|B", fuel_a, fuel_b], 3)
+    return([fuel_a, fuel_b])
