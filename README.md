@@ -12,6 +12,29 @@ Ethereum features the concept of autonomous contracts which are accounts with as
 
 Fuel Battles mirrors the *computation comes at a cost* aspect of Ethereum. It requires to create good AI implementations that balance the utilization of gas (computing power) with the complexity of an AI strategy.
 
+
+Playing the Game
+----------------
+
+Install Python2.7 and the necessary libraries
+> git clone https://github.com/heikoheiko/fuelbattles/
+
+> cd fuelbattles
+
+> pip install -r requirements.txt
+
+The [serpent](https://github.com/ethereum/wiki/wiki/Serpent) (Ethereum HLL) version can be run in a local (offline) test environment:
+> python serpent/runsim.py
+
+There is also a pure Python based prototype which can be run with
+> python python/run.py
+
+
+Out of the box the software runs a local simulation with two predefined AIs competing about resources on a pseudo randomly generated grid. 
+
+Actually _playing the game_, involves the development (coding) of an AI contract and let it compete with other AIs on the Ethereum blockchain.
+
+
 Game Mechanics
 --------------
 
@@ -120,22 +143,6 @@ Game Logic
             - record the gas used for the simulation step
 
 
-Running the software
---------------------
-
-Install Python2.7 and the necessary libraries
-> git clone https://github.com/heikoheiko/fuelbattles/
-
-> cd fuelbattles
-
-> pip install -r requirements.txt
-
-The [serpent](https://github.com/ethereum/wiki/wiki/Serpent) (Ethereum HLL) version can be run in a local (offline) test environment:
-> python serpent/runsim.py
-
-There is also a pure Python based prototype which can be run with
-> python python/run.py
-
 
 
 Writing your own Fuel Battles AI
@@ -159,7 +166,7 @@ The implementation is neither optimized for CPU nor memory efficiency yet. These
 Is this somehow useful?
 -----------------------
 
-The current implementation was written as my first exercise in writing contracts for Ethereum and is still limited.
+The current implementation was written as a first exercise in writing contracts for Ethereum and is still limited.
 
 In the future it could be extended to serve as a trust free environment in which confident developers would enter a trial of strength and place bets on their AI implementations.
 
