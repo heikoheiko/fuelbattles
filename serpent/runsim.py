@@ -12,19 +12,15 @@ def run_simulation():
     b_ai = s.contract('ai_simple.se')
     logger.register_address('b_ai', b_ai)
     winner = s.send(tester.k0, simulation, 0, data=[a_ai, b_ai])
-    try:
-        if not winner:
-            print 'simulation failed'
-            print logger.print_log_history(2)
-        elif winner[0] == a_ai.decode('hex'):
-            print "A wins"
-        else:
-            print "B wins"
-        print logger.print_log_history(2)
 
-    except Exception, e:
-        logger.print_log_history(2)
-        raise e
+    if not winner:
+        print 'simulation failed, last logs:'
+        print logger.print_log_history(2)
+    elif a_ai in hex(winner[0]):
+        print "A WINS " * 5
+    else:
+        assert b_ai in hex(winner[0])
+        print "B WINS " * 5
 
 if __name__ == '__main__':
     run_simulation()
