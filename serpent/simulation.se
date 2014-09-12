@@ -100,13 +100,17 @@ code:
 
         # a_move = [move_from, move_to, move_amount]
         call(debug, ["calling ai_a gas:", a_fuel], 2)
-        a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
+        #a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
+        # FIXME: CALL WITH MSG TO LIMIT GAS
+        a_move = call(a_ai_address, memory, memory_length, 3)
         call(debug, a_move, 3)
         a_ai_gas_used = gas - tx.gas
         call(debug, ["ai_a move g,f,t,v", a_ai_gas_used, a_move[0], a_move[1], a_move[2]], 5)
 
         call(debug, ["calling ai_b gas:", b_fuel], 2)
-        b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
+        #b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
+        # FIXME: CALL WITH MSG TO LIMIT GAS
+        b_move = call(b_ai_address, memory, memory_length, 3)
         b_ai_gas_used = gas - tx.gas - a_ai_gas_used
         call(debug, ["ai_b move g,f,t,v", b_ai_gas_used, b_move[0], b_move[1], b_move[2]], 5)
 
