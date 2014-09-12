@@ -31,6 +31,7 @@ class Logger(object):
         words =  map(lambda x: x-2**256 if x > 2**255 else x, o)
         if words and words[0] == 0xdeba6:
             self.debug_contract = data['to']
+            self.register_address('debug', data['to'])
             h = hex(words[1])[2:].replace('L','')
             try:
                 label = ('0' + h if len(h) % 2 else h).decode('hex')

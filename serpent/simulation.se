@@ -223,7 +223,7 @@ code:
         call(debug, ['----END-STEP----', sim_steps], 2)
         call(debug, a_grid, ncells)
         call(debug, b_grid, ncells)
-
+        call(debug, memory, memory_length)
 
     # end while loop
     if a_fuel > b_fuel:

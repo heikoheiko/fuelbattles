@@ -1,6 +1,8 @@
 # execute this to run a battle
+import sys
 from testenv import tester
 from testenv import logger
+
 
 SIM_GAS = 10**6
 
@@ -27,4 +29,8 @@ def run_simulation():
         print "B WINS " * 5
 
 if __name__ == '__main__':
-    run_simulation()
+    if len(sys.argv) == 2: # debug
+        run_simulation()
+    else:
+        import visualizer
+        run_simulation()
