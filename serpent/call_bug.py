@@ -48,7 +48,8 @@ print "test msg()"
 r = s.send(tester.k0, c3, 0, [c1.decode('hex')])
 if r != move:
     print 'FAILED! %r != %r' %(r, move)
-
+else:
+    print 'PASSED'
 
 # test caller_code
 print
@@ -56,4 +57,6 @@ print "test call()"
 r = s.send(tester.k0, c2, 0, [c1.decode('hex')])
 if r != move:
     print 'FAILED! %r != %r' %(r, move)
+else:
+    print 'PASSED'
 
