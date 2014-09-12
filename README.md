@@ -4,11 +4,36 @@ FUEL BATTLES
 
 Fuel Battles is a grid based simulation and AI challenge designed for [Ethereum](https://github.com/ethereum/wiki/wiki) - a generalized, decentralized consensus platform.
 
+It is inspired by the conquest game [Galcon](https://en.wikipedia.org/wiki/Galcon), with cells on a grid emulating the planets and fuel instead of space ships, minus graphics.
+
 The software implements an environment in which AIs can compete within the blockchain.
 
 Ethereum features the concept of autonomous contracts which are accounts with associated code, living on the blockchain. In Ethereum code is executed whenever a transaction is sent to a contract. In order to cope with the [halting problem](https://en.wikipedia.org/wiki/Halting_problem), there is the concept of gas. Gas is needed to fuel code execution and has to be converted at the current gas price (of the current block) in exchange for Ether, the internal currency of Ethereum.
 
-Fuel Battles is a game which mirrors the *computation comes at a cost* aspect of Ethereum. It requires to create good AI implementations that balance the utilization of gas (computing power) with the complexity of an AI strategy.
+Fuel Battles mirrors the *computation comes at a cost* aspect of Ethereum. It requires to create good AI implementations that balance the utilization of gas (computing power) with the complexity of an AI strategy.
+
+
+Playing the Game
+----------------
+
+Install Python2.7 and the necessary libraries
+> git clone https://github.com/heikoheiko/fuelbattles/
+
+> cd fuelbattles
+
+> pip install -r requirements.txt
+
+The [serpent](https://github.com/ethereum/wiki/wiki/Serpent) (Ethereum HLL) version can be run in a local (offline) test environment:
+> python serpent/runsim.py
+
+There is also a pure Python based prototype which can be run with
+> python python/run.py
+
+
+Out of the box the software runs a local simulation with two predefined AIs competing about resources on a pseudo randomly generated grid. 
+
+Actually _playing the game_, involves the development (coding) of an AI contract and let it compete with other AIs on the Ethereum blockchain.
+
 
 Game Mechanics
 --------------
@@ -118,22 +143,6 @@ Game Logic
             - record the gas used for the simulation step
 
 
-Running the software
---------------------
-
-Install Python2.7 and the necessary libraries
-> git clone https://github.com/heikoheiko/fuelbattles/
-
-> cd fuelbattles
-
-> pip install -r requirements.txt
-
-The [serpent](https://github.com/ethereum/wiki/wiki/Serpent) (Ethereum HLL) version can be run in a local (offline) test environment:
-> python serpent/runsim.py
-
-There is also a pure Python based prototype which can be run with
-> python python/run.py
-
 
 
 Writing your own Fuel Battles AI
@@ -154,6 +163,11 @@ The current implementation has an opinionated approach which prefers convenience
 The implementation is neither optimized for CPU nor memory efficiency yet. These would come at the cost of simplicity and code readability, but might be worthwhile in the future to have more gas available to the AIs.
 
 
+Is this somehow useful?
+-----------------------
 
+The current implementation was written as a first exercise in writing contracts for Ethereum and is still limited.
+
+In the future it could be extended to serve as a trust free environment in which confident developers would enter a trial of strength and place bets on their AI implementations.
 
 
