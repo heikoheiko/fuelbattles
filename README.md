@@ -4,11 +4,13 @@ FUEL BATTLES
 
 Fuel Battles is a grid based simulation and AI challenge designed for [Ethereum](https://github.com/ethereum/wiki/wiki) - a generalized, decentralized consensus platform.
 
+It is inspired by the conquest game [Galcon](https://en.wikipedia.org/wiki/Galcon), with cells on a grid emulating the planets and fuel instead of space ships, minus graphics.
+
 The software implements an environment in which AIs can compete within the blockchain.
 
 Ethereum features the concept of autonomous contracts which are accounts with associated code, living on the blockchain. In Ethereum code is executed whenever a transaction is sent to a contract. In order to cope with the [halting problem](https://en.wikipedia.org/wiki/Halting_problem), there is the concept of gas. Gas is needed to fuel code execution and has to be converted at the current gas price (of the current block) in exchange for Ether, the internal currency of Ethereum.
 
-Fuel Battles is a game which mirrors the *computation comes at a cost* aspect of Ethereum. It requires to create good AI implementations that balance the utilization of gas (computing power) with the complexity of an AI strategy.
+Fuel Battles mirrors the *computation comes at a cost* aspect of Ethereum. It requires to create good AI implementations that balance the utilization of gas (computing power) with the complexity of an AI strategy.
 
 Game Mechanics
 --------------
@@ -159,6 +161,6 @@ Is this somehow useful?
 
 The current implementation was written as my first exercise in writing contracts for Ethereum and is still limited.
 
-But in the future it could be extended to serve as a trust free environment in which confident developers could enter a trial of strength and place bets on their AI implementations.
+In the future it could be extended to serve as a trust free environment in which confident developers would enter a trial of strength and place bets on their AI implementations.
 
 
