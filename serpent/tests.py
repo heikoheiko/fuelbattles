@@ -37,6 +37,7 @@ def test_is_neighbour():
     c = s.contract('is_neighbour.se')
     for expected, a, b in [(0, 1, 1), (1, 0, 1), (1, 4, 7), (0, 4, 8)]:
         assert [expected] == s.send(tester.k0, c, 0, data=[a, b, 3, 3])
+    assert 1 == s.send(tester.k0, c, 0, data=[4, 0, 4, 4])
 test_is_neighbour()
 
 

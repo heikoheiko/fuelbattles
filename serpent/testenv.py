@@ -37,14 +37,14 @@ class Logger(object):
             except TypeError:
                 label = '0x%s' % h
             if is_printable(label):
-                print "DEBUG:\t%r > %r: %r" % (self.name(data['sender']), label, words[2:])
+                print "DEBUG:\t%r > %r: %r" % (self.name(data['sender']).ljust(4), label, words[2:])
             else:
                 print "DEBUG:\t%r > %r" %  (self.name(data['sender']), words[1:])
             return True
 
     def format_msg(self, data, label='MSG'):
         if data['to'] != self.debug_contract:
-            sender = self.name(data.get('sender', ''))
+            sender = self.name(data.get('sender', '')).ljust(4)
             to = self.name(data.get('to', ''))
             print '%s:\t%r > %r: v:%r gas:%r' %(label, sender, to, data['value'], data['gas'])
 
