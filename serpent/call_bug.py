@@ -5,21 +5,39 @@ move = [1,2,3]
 return(move, 3)
 """
 
+"""
+https://github.com/ethereum/wiki/wiki/Serpent
+
+call(addr, datarray, insize, outsize)
+equivalent to msg(tx.gas - 25, addr, 0, datarray, insize, outsize)
+"""
+
 code_call = """
 address = msg.data[0]
-memory_length = 68
-memory = array(memory_length)
-move = call(address, memory, memory_length, 3)
-return(move, 3)
+insize = 68
+outsize = 3
+datarray = array(insize)
+move = call(address, datarray, insize, outsize)
+return(move, outsize)
+"""
+
+
+"""
+msg(gas, to, value, datarray, insize, outsize):
+sends a message with the specified recipient,
+quantity of ether (in wei) and amount of gas,
+taking insize values from the specified array as input,
+and returns an outsize-sized data array as the output
 """
 
 code_msg = """
 address = msg.data[0]
-memory_length = 68
-memory = array(memory_length)
+insize = 68
+outsize = 3
+datarray = array(insize)
 gas = 1000
 value = 0
-move = msg(gas, address, value, memory, memory_length, 3)
+move = msg(gas, address, value, datarray, insize, outsize)
 return(move, 3)
 """
 
@@ -42,7 +60,8 @@ logger.register_address('code_msg', c3)
 move = [1, 2, 3]
 
 
-# test msg_code
+
+# fails on os x passes on linux
 print
 print "test msg()"
 r = s.send(tester.k0, c3, 0, [c1.decode('hex')])
@@ -51,7 +70,8 @@ if r != move:
 else:
     print 'PASSED'
 
-# test caller_code
+
+# fails on osx and linux
 print
 print "test call()"
 r = s.send(tester.k0, c2, 0, [c1.decode('hex')])
