@@ -18,7 +18,8 @@ address = msg.data[0]
 memory_length = 68
 memory = array(memory_length)
 gas = 1000
-move = msg(gas, address, 0, memory, memory_length, 3)
+value = 0
+move = msg(gas, address, value, memory, memory_length, 3)
 return(move, 3)
 """
 
