@@ -44,8 +44,7 @@ def test_debug():
     s = tester.state()
     debug = s.contract('debug.se')
     print "debug address: %s" % debug
-    print s.send(tester.k0, debug, 0, data=["hallo", 1, 2, 3])
-    print 'debug returned'
+    print 'debug returned', s.send(tester.k0, debug, 0, data=["hallo", 1, 2, 3])
 test_debug()
 
 
