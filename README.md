@@ -28,6 +28,10 @@ The [serpent](https://github.com/ethereum/wiki/wiki/Serpent) (Ethereum HLL) vers
 
 > python runsim.py
 
+To get debug output run with:
+
+> python runsim.py debug
+
 There is also a pure Python based prototype which can be run with
 > python python/run.py
 
