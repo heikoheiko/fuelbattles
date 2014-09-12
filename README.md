@@ -159,7 +159,7 @@ Check `serpent/runsim.py` and `serpent/ai_simple.se` to see how AIs are implemen
 Notes
 -----
 
-The complete simulation has to be run in one transaction in one block. Therefore the simulation time is limited by the `block.gas_limit`. In effect only small grids and not too complex AIs are currently feasible. Once the ALERT feature becomes available in Ethereum (PoC7), the simulation steps can be distributed over multiple blocks and the gas cost probably be supplied by the organizer contract. This is when more complex AI strategies can be run on the Ethereum blockchain. These limitations can be circumvented when running in the local test environment.
+The complete simulation has to be run in one transaction in one block. Therefore the simulation time is limited by the `block.gas_limit`. In effect only small grids and not too complex AIs are currently feasible. Once the `ALARM` feature becomes available in Ethereum (PoC7), the simulation steps can be distributed over multiple blocks and the gas cost probably be supplied by the organizer contract. This is when more complex AI strategies can be run on the Ethereum blockchain. These limitations can be circumvented when running in the local test environment.
 
 The current implementation has an opinionated approach which prefers convenience over efficiency, when calling the AIs. It basically sends the whole state of the simulation, rather then sending only the starting parameters (grid dimensions, seed, etc.) in the first call and no more than the opponents move in successive calls.
 The implementation is neither optimized for CPU nor memory efficiency yet. These would come at the cost of simplicity and code readability, but might be worthwhile in the future to have more gas available to the AIs.
