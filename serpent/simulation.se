@@ -170,12 +170,13 @@ code:
                 d = a_grid[i] - b_grid[i]
                 call(debug, ["collision cell|a|b", i, a_grid[i], b_grid[i]], 4)
                 if d > 0:
-                    a_grid[i] = a_grid[i] - d
+                    a_grid[i] -= d
                     b_grid[i] = 0
+                    redistribution += d
                 else:
-                    b_grid[i] = b_grid[i] - d
+                    b_grid[i] += d
                     a_grid[i] = 0
-                redistribution += d
+                    redistribution -= d
             i += 1
         call(report, memory, memory_length)
 
@@ -220,6 +221,8 @@ code:
         call(debug, ['gas left: a|b|tx:', a_fuel, b_fuel, tx.gas], 4)
         call(report, memory, memory_length)
         call(debug, ['----END-STEP----', sim_steps], 2)
+        call(debug, a_grid, ncells)
+        call(debug, b_grid, ncells)
 
 
     # end while loop
