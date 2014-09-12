@@ -46,10 +46,10 @@ code:
     # setup redistribution grid
     redist_sorted = memory + (4 + 2 * ncells) * wordsize
     # redist_sorted = [value, cell, value, cell, ...]
-    seed = sha3(block.timestamp + block.prevhash + block.coinbase)
+    seed = sha3(block.timestamp + block.prevhash + block.coinbase + block.gas_used)
     i = 0
     while i < ncells/2:
-        v = (seed / (i+1) % 256)
+        v = sha3(seed +i) % 256
         redistribution_grid[i] = v
         redist_sorted[i*2] = v
         redist_sorted[i*2+1] = i
