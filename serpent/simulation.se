@@ -61,7 +61,7 @@ code:
     call(debug, redistribution_grid, ncells)
 
     # sorted for ais convenience (there is a bug in quicksort pairs!)
-    call(debug, ["sorting redist_sorted", tx.gas], 2)
+    call(debug, ["sorting redist_sorted"], 1)
 
     sg = call(quicksort_pairs, redist_sorted, ncells*2, ncells*2)
     i = 0
@@ -81,7 +81,7 @@ code:
     b_grid[ncells - pos - 1] = b_fuel
 
 
-    call(debug, ["sim is set up", tx.gas], 2)
+    call(debug, ["sim is set up"], 1)
     call(debug, memory, memory_length)
 
     sim_steps = 0
@@ -134,7 +134,8 @@ code:
             call(report, memory, memory_length)
             # validate + move
             if move_amount and move_from < ncells and move_to < ncells and grid[move_from] >= move_amount:
-                if call(is_neighbour, move_from, move_to):
+                r = call(is_neighbour, [move_from, move_to, cols, rows], 4):
+                if r:
                     grid[move_from] = grid[move_from] - move_amount
                     grid[move_to] = grid[move_to] + move_amount
                 else:
@@ -145,7 +146,7 @@ code:
             call(report, memory, memory_length)
 
             # remove gas and redistribution
-            call(debug, ["substracting gas + redist", tx.gas], 2)
+            call(debug, ["substracting gas + redist"], 1)
             player_gas_allowance = (sim_step_gas_used / 2 + ai_gas_used)
             i = 0
             while i < ncells:
@@ -162,11 +163,12 @@ code:
             player +=1
 
         # handle collisions, destroyed fuel is redistributed
-        call(debug, ["handling collsions", tx.gas], 2)
+        call(debug, ["handling collisions"], 1)
         i = 0
         while i < ncells:
             if a_grid[i] and b_grid[i]:
                 d = a_grid[i] - b_grid[i]
+                call(debug, ["collision cell|a|b", i, a_grid[i], b_grid[i]], 4)
                 if d > 0:
                     a_grid[i] = a_grid[i] - d
                     b_grid[i] = 0
@@ -178,7 +180,7 @@ code:
         call(report, memory, memory_length)
 
         # normalize redistribution by occupied values on grid
-        call(debug, ["normalizing redistributions", tx.gas], 2)
+        call(debug, ["normalizing redist:", redistribution], 2)
         norm = 0
         i = 0
         while i < ncells:
@@ -188,7 +190,7 @@ code:
         redistribution /= norm
 
         # redistribute fuel
-        call(debug, ["redistribute", tx.gas], 2)
+        call(debug, ["redistribute"], 1)
         a_fuel = 0
         b_fuel = 0
         i = 0
