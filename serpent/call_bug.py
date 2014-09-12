@@ -61,7 +61,7 @@ move = [1, 2, 3]
 
 
 
-# fails on os x passes on linux
+# fails on osx and linux
 print
 print "test msg()"
 r = s.send(tester.k0, c3, 0, [c1.decode('hex')])
@@ -70,8 +70,7 @@ if r != move:
 else:
     print 'PASSED'
 
-
-# fails on osx and linux
+# fails on os x passes on linux
 print
 print "test call()"
 r = s.send(tester.k0, c2, 0, [c1.decode('hex')])
