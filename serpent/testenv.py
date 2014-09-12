@@ -78,6 +78,10 @@ class Logger(object):
     def get_history(self, num=1):
         return self.history[-num:]
 
+    def print_log_history(self, num):
+        print '\n'.join(repr(x) for x in self.get_history(num))
+
+
 logger = Logger()
 
 pyethereum.processblock.pblogger.listeners.append(logger.log_receiver)

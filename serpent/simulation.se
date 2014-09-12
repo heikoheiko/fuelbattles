@@ -85,6 +85,10 @@ code:
     sim_steps = 0
     sim_step_gas_used = start_gas - tx.gas # gas the simulator used
     # end if one ran out of gas or half of start_gas is used
+
+    a_move = array(3)
+    b_move = array(3)
+
     while a_fuel > 0 and b_fuel > 0:
         sim_step_start_gas = tx.gas
         total_at_start = a_fuel + b_fuel
@@ -95,13 +99,13 @@ code:
         gas = tx.gas
 
         # a_move = [move_from, move_to, move_amount]
-        call(debug, ["calling ai_a", tx.gas], 2)
+        call(debug, ["calling ai_a gas:", a_fuel], 2)
         a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
         call(debug, a_move, 3)
         a_ai_gas_used = gas - tx.gas
         call(debug, ["ai_a move g,f,t,v", a_ai_gas_used, a_move[0], a_move[1], a_move[2]], 5)
 
-        call(debug, ["calling ai_b", tx.gas], 2)
+        call(debug, ["calling ai_b gas:", b_fuel], 2)
         b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
         b_ai_gas_used = gas - tx.gas - a_ai_gas_used
         call(debug, ["ai_b move g,f,t,v", b_ai_gas_used, b_move[0], b_move[1], b_move[2]], 5)

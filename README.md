@@ -24,13 +24,15 @@ Install Python2.7 and the necessary libraries
 > pip install -r requirements.txt
 
 The [serpent](https://github.com/ethereum/wiki/wiki/Serpent) (Ethereum HLL) version can be run in a local (offline) test environment:
-> python serpent/runsim.py
+> cd serpent
+
+> python runsim.py
 
 There is also a pure Python based prototype which can be run with
 > python python/run.py
 
 
-Out of the box the software runs a local simulation with two predefined AIs competing about resources on a pseudo randomly generated grid. 
+Out of the box the software runs a local simulation with two predefined AIs competing about resources on a pseudo randomly generated grid.
 
 Actually _playing the game_, involves the development (coding) of an AI contract and let it compete with other AIs on the Ethereum blockchain.
 
@@ -131,7 +133,7 @@ Game Logic
               redist_allowance = total fuel on grid redist_factor
             - subtract the redist_allowance from each occupied cell
               proportionally to the fuel at cell
-            - with each collision which is when 
+            - with each collision which is when
               fuel is moved to a cell which is occupied by the opponent
                 - subtract the fuel difference from both players at the cell
                   leaving one with player with no fuel on the cell
@@ -139,7 +141,7 @@ Game Logic
             - distribute the redist_allowance
               for the occupied cells
               - redistribution is proportionally to the cell weight in the redistribution grid
-              - add the redistribution to the cell 
+              - add the redistribution to the cell
             - record the gas used for the simulation step
 
 
@@ -151,7 +153,7 @@ Writing your own Fuel Battles AI
 Fuel Battles as it is, basically sets the stage for trust free grid battles on the blockchain, by implementing the organizer and simulator contracts.
 While it comes with two AI implementations, these are very limited and serve as examples.
 
-Check `serpent/runsim.py` and `serpent/ai_simple.se` to see how AIs are implemented and invoked. 
+Check `serpent/runsim.py` and `serpent/ai_simple.se` to see how AIs are implemented and invoked.
 
 
 Notes
@@ -159,7 +161,7 @@ Notes
 
 The complete simulation has to be run in one transaction in one block. Therefore the simulation time is limited by the `block.gas_limit`. In effect only small grids and not too complex AIs are currently feasible. Once the ALERT feature becomes available in Ethereum (PoC7), the simulation steps can be distributed over multiple blocks and the gas cost probably be supplied by the organizer contract. This is when more complex AI strategies can be run on the Ethereum blockchain. These limitations can be circumvented when running in the local test environment.
 
-The current implementation has an opinionated approach which prefers convenience over efficiency, when calling the AIs. It basically sends the whole state of the simulation, rather then sending only the starting parameters (grid dimensions, seed, etc.) in the first call and no more than the opponents move in successive calls.  
+The current implementation has an opinionated approach which prefers convenience over efficiency, when calling the AIs. It basically sends the whole state of the simulation, rather then sending only the starting parameters (grid dimensions, seed, etc.) in the first call and no more than the opponents move in successive calls.
 The implementation is neither optimized for CPU nor memory efficiency yet. These would come at the cost of simplicity and code readability, but might be worthwhile in the future to have more gas available to the AIs.
 
 
