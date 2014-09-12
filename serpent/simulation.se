@@ -201,10 +201,10 @@ code:
             #call(debug, ["add redist", i, add,  a_grid[i], b_grid[i]], 5)
             if a_grid[i]:
                 a_grid[i] += add
-                a_fuel += add
+                a_fuel += a_grid[i]
             if b_grid[i]:
                 b_grid[i] += add
-                b_fuel += add
+                b_fuel += b_grid[i]
             i += 1
 
         call(debug, ["done redist"], 1)
