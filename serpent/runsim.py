@@ -4,7 +4,7 @@ from testenv import tester
 from testenv import logger
 
 
-SIM_GAS = 10**6
+SIM_GAS = 10**7
 
 def run_simulation():
     s = tester.state()
@@ -18,7 +18,11 @@ def run_simulation():
     #b_ai = s.contract('ai_simple.se')
     logger.register_address('b_ai', b_ai)
 
-    winner = s.send(tester.k0, simulation, 0, data=[a_ai, b_ai])
+    try:
+        winner = s.send(tester.k0, simulation, 0, data=[a_ai, b_ai])
+    except Exception as e:
+        logger.print_log_history(4)
+        raise e
 
     if not winner:
         print 'simulation failed, last logs:'

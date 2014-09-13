@@ -35,6 +35,7 @@ def format_debug(self, data):
                 b_grid=words[4+ncells:4+ncells*2], redistribution_grid=redist)
 
 def log_receiver(self, name, data):
+    self.history.append((name, data))
     if name == 'MSG APPLIED':
         if data['result'] != -1:
             self.format_debug(data)
