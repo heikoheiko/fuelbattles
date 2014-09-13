@@ -21,7 +21,8 @@ def run_simulation():
     try:
         winner = s.send(tester.k0, simulation, 0, data=[a_ai, b_ai])
     except Exception as e:
-        logger.print_log_history(4)
+        print 'last messages'
+        logger.print_log_history(8)
         raise e
 
     if not winner:
@@ -35,7 +36,8 @@ def run_simulation():
 
 if __name__ == '__main__':
     if len(sys.argv) == 2: # debug
-        run_simulation()
+        while True:
+            run_simulation()
     else:
         import visualizer
         run_simulation()

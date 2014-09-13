@@ -10,9 +10,10 @@ def draw(sim_steps, cols, rows, a_grid, b_grid, redistribution_grid):
     screen.gotoXY(0, 0)
     a_fuel = sum(a_grid)
     b_fuel = sum(b_grid)
-    print "STEP:%d\tFUEL: A:%d\tB:%d\tA+B:%d" % (sim_steps, a_fuel, b_fuel, a_fuel + b_fuel)
+    print "STEP:%3d\tFUEL: A:%8d\tB:%8d\tA+B:%8d" % (sim_steps, a_fuel, b_fuel, a_fuel + b_fuel)
+    print '\nRED:\tPlayer A\nGREEN:\tPlayer B\nBLACK:\tCell Weight'
 
-    y_offset = 10
+    y_offset = 8
     norm = 99. / max([1] + a_grid + b_grid)
     for row in range(rows):
         for col in range(cols):
