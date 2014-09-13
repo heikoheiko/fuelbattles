@@ -32,6 +32,9 @@ class Logger(object):
         if words and words[0] == 0xdeba6:
             self.debug_contract = data['to']
             self.register_address('debug', data['to'])
+            if len(words) < 2:
+                print "DEBUG:\t%r > %r" %  (self.name(data['sender']), [])
+                return
             h = hex(words[1])[2:].replace('L','')
             try:
                 label = ('0' + h if len(h) % 2 else h).decode('hex')
