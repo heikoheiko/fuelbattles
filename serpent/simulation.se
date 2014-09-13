@@ -55,8 +55,6 @@ code:
         redist_sorted[i*2+1] = i
         # mirrored
         redistribution_grid[ncells - i -1] = v
-        redist_sorted[ncells * 2 - (i+1)*2] = v
-        redist_sorted[ncells * 2 - (i+1)*2 + 1] = ncells - i - 1
         i += 1
     call(debug, redistribution_grid, ncells)
 
@@ -69,15 +67,10 @@ code:
     while i < ncells/2:
         v = sg[i * 2]
         c = sg[i * 2 + 1]
-        # try to compensate for the sort bug
-        if v == 0 and c > 0:
-            v = 100
-        if v: # try to compensate for the sort bug
-            # does not work as some are idx are then there twice others not
-            redist_sorted[i * 4] = v
-            redist_sorted[i * 4 + 1] = c
-            redist_sorted[i * 4 + 2] = v
-            redist_sorted[i * 4 + 3] = ncells - c - 1
+        redist_sorted[i * 4] = v
+        redist_sorted[i * 4 + 1] = c
+        redist_sorted[i * 4 + 2] = v
+        redist_sorted[i * 4 + 3] = ncells - c - 1
         i += 1
 
     # place initial fuel

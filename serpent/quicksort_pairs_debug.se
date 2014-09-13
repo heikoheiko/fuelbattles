@@ -16,7 +16,12 @@ code:
     debug = contract.storage[1002]
     call(debug, ['called'], 1)
     if msg.datasize <= 2:
-        return(msg.data, msg.datasize)
+        res = array(msg.datasize)
+        i = 0
+        while i < msg.datasize:
+            res[i] = msg.data[i]
+            i += 1
+        return(res, msg.datasize)
     else:
         low = array(msg.datasize)
         lsz = 0
