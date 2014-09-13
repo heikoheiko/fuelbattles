@@ -4,7 +4,7 @@ from testenv import tester
 from testenv import logger
 
 
-SIM_GAS = 10**7
+SIM_GAS = 10**6
 
 def run_simulation():
     s = tester.state()

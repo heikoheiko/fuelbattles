@@ -92,7 +92,11 @@ code:
     a_move = array(3)
     b_move = array(3)
 
-    while a_fuel > 0 and b_fuel > 0:
+    a_ai_gas_used = 0
+    b_ai_gas_used = 0
+    sim_step_gas_used = 0
+
+    while a_fuel > 0 and b_fuel > 0 and tx.gas/4 > (sim_step_gas_used + a_ai_gas_used + b_ai_gas_used):
         call(report, memory, memory_length)
         sim_step_start_gas = tx.gas
         total_at_start = a_fuel + b_fuel
@@ -103,18 +107,20 @@ code:
         gas = tx.gas
 
         # a_move = [move_from, move_to, move_amount]
-        call(debug, ["calling ai_a gas:", a_fuel], 2)
-        a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
-        # FIXME: CALL WITH MSG TO LIMIT GAS
-        #a_move = call(a_ai_address, memory, memory_length, 3)
+        gas = a_fuel - sim_step_gas_used
+        if gas <0:
+            gas = 0
+        call(debug, ["calling ai_a gas:", gas], 2)
+        a_move = msg(gas, a_ai_address, 0, memory, memory_length, 3)
         call(debug, a_move, 3)
         a_ai_gas_used = gas - tx.gas
         call(debug, ["ai_a move g,f,t,v", a_ai_gas_used, a_move[0], a_move[1], a_move[2]], 5)
-
-        call(debug, ["calling ai_b gas:", b_fuel], 2)
-        b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
-        # FIXME: CALL WITH MSG TO LIMIT GAS
-        #b_move = call(b_ai_address, memory, memory_length, 3)
+        # b move
+        gas = b_fuel - sim_step_gas_used
+        if gas <0:
+            gas = 0
+        call(debug, ["calling ai_b gas:", gas], 2)
+        b_move = msg(gas, b_ai_address, 0, memory, memory_length, 3)
         b_ai_gas_used = gas - tx.gas - a_ai_gas_used
         call(debug, ["ai_b move g,f,t,v", b_ai_gas_used, b_move[0], b_move[1], b_move[2]], 5)
 
@@ -127,9 +133,16 @@ code:
             move = player_data[player][1]
             ai_gas_used = player_data[player][2]
             fuel = player_data[player][3]
-            move_from = move[0]
-            move_to = move[1]
-            move_amount= move[2]
+
+            if move == -1:
+                call(debug, ["OOG player", player], 2)
+                move_from = 0
+                move_to = 0
+                move_amount= 0
+            else:
+                move_from = move[0]
+                move_to = move[1]
+                move_amount= move[2]
 
             call(debug, ["validate + move", move_from, move_to, move_amount], 4)
             call(report, memory, memory_length)
