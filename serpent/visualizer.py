@@ -6,6 +6,7 @@ import string
 import pyethereum
 import serpent
 import testenv
+import time
 sys.path.append('../python/')
 import ui
 
@@ -31,8 +32,15 @@ def format_debug(self, data):
                 c = words[4 + ncells * 2 + i*2 + 1]
                 redist[c] = v
             self.sim_steps += 1
+
+            zeros = [0] * ncells
+            # blink grid values
+            ui.draw(sim_steps=self.sim_steps, cols=words[0], rows=words[1], a_grid=zeros,
+                b_grid=zeros, redistribution_grid=redist)
+            time.sleep(.2)
             ui.draw(sim_steps=self.sim_steps, cols=words[0], rows=words[1], a_grid=words[4:4+ncells],
                 b_grid=words[4+ncells:4+ncells*2], redistribution_grid=redist)
+
 
 def log_receiver(self, name, data):
     self.history.append((name, data))

@@ -13,7 +13,7 @@ def draw(sim_steps, cols, rows, a_grid, b_grid, redistribution_grid):
     print "STEP:%d\tFUEL: A:%d\tB:%d\tA+B:%d" % (sim_steps, a_fuel, b_fuel, a_fuel + b_fuel)
 
     y_offset = 10
-    norm = 99. / max(a_grid + b_grid)
+    norm = 99. / max([1] + a_grid + b_grid)
     for row in range(rows):
         for col in range(cols):
             idx = row * cols + col
