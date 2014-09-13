@@ -22,15 +22,14 @@ def draw(sim_steps, cols, rows, a_grid, b_grid, redistribution_grid):
             #r = '%3d' % redistribution_grid[idx]
             if a_grid[idx]:
                 owner = '%2d' % (a_grid[idx] * norm)
-            if b_grid[idx]:
-                owner = '%2d' % (b_grid[idx] * norm)
-            screen.gotoXY(1+ col*3, y_offset + row)
-            if a_grid[idx]:
                 c = red
             elif b_grid[idx]:
+                owner = '%2d' % (b_grid[idx] * norm)
                 c = green
             else:
                 c = black
+                owner = '%2d' % (redistribution_grid[idx] * 100 / 256)
+            screen.gotoXY(1+ col*3, y_offset + row)
             screen.xterm256_set_bk_color(c)
             print owner,
         print
