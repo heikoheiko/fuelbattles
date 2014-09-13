@@ -23,8 +23,16 @@ def format_debug(self, data):
             words = words[1:]
             #msg.data = [cols, rows, a_ai, b_ai] + [a_grid] + [b_grid] + [sorted_redistribution_grid]
             ncells = words[0] * words[1]
+
+            # restore redist
+            redist = [0] * ncells
+            for i in range(ncells):
+                v = words[4 + ncells * 2 + i*2]
+                c = words[4 + ncells * 2 + i*2 + 1]
+                redist[c] = v
+
             ui.draw(sim_steps=0, cols=words[0], rows=words[1], a_grid=words[4:4+ncells],
-                b_grid=words[4+ncells:4+ncells*2], redistribution_grid=[0] * ncells)
+                b_grid=words[4+ncells:4+ncells*2], redistribution_grid=redist)
 
 def log_receiver(self, name, data):
     if name == 'MSG APPLIED':

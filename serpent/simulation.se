@@ -15,8 +15,8 @@ code:
 
     # params
     inv_redistribution_factor = 25
-    cols = 4
-    rows = 4
+    cols = 6
+    rows = 6
     ncells = cols * rows
     is_neighbour = contract.storage[1001]
     debug = contract.storage[1002]
@@ -63,14 +63,21 @@ code:
     # sorted for ais convenience (there is a bug in quicksort pairs!)
     call(debug, ["sorting redist_sorted"], 1)
 
-    sg = call(quicksort_pairs, redist_sorted, ncells*2, ncells*2)
-    call(debug, sg, ncells*2)
+    sg = call(quicksort_pairs, redist_sorted, ncells, ncells)
+    call(debug, sg, ncells)
     i = 0
-    while i < ncells:
+    while i < ncells/2:
         v = sg[i * 2]
         c = sg[i * 2 + 1]
-        redist_sorted[i * 2] = v
-        redist_sorted[i * 2 + 1] = c
+        # try to compensate for the sort bug
+        if v == 0 and c > 0:
+            v = 100
+        if v: # try to compensate for the sort bug
+            # does not work as some are idx are then there twice others not
+            redist_sorted[i * 4] = v
+            redist_sorted[i * 4 + 1] = c
+            redist_sorted[i * 4 + 2] = v
+            redist_sorted[i * 4 + 3] = ncells - c - 1
         i += 1
 
     # place initial fuel
@@ -104,17 +111,17 @@ code:
 
         # a_move = [move_from, move_to, move_amount]
         call(debug, ["calling ai_a gas:", a_fuel], 2)
-        #a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
+        a_move = msg(a_fuel, a_ai_address, 0, memory, memory_length, 3)
         # FIXME: CALL WITH MSG TO LIMIT GAS
-        a_move = call(a_ai_address, memory, memory_length, 3)
+        #a_move = call(a_ai_address, memory, memory_length, 3)
         call(debug, a_move, 3)
         a_ai_gas_used = gas - tx.gas
         call(debug, ["ai_a move g,f,t,v", a_ai_gas_used, a_move[0], a_move[1], a_move[2]], 5)
 
         call(debug, ["calling ai_b gas:", b_fuel], 2)
-        #b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
+        b_move = msg(b_fuel, b_ai_address, 0, memory, memory_length, 3)
         # FIXME: CALL WITH MSG TO LIMIT GAS
-        b_move = call(b_ai_address, memory, memory_length, 3)
+        #b_move = call(b_ai_address, memory, memory_length, 3)
         b_ai_gas_used = gas - tx.gas - a_ai_gas_used
         call(debug, ["ai_b move g,f,t,v", b_ai_gas_used, b_move[0], b_move[1], b_move[2]], 5)
 

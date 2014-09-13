@@ -41,7 +41,7 @@ move = [1, 2, 3]
 
 
 # fails on osx and linux
-if False:
+if True:
     print
     print "test msg()"
     r = s.send(tester.k0, c3, 0, [c1.decode('hex')])
