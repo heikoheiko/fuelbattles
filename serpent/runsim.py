@@ -14,7 +14,8 @@ def run_simulation():
     logger.register_address('sim', simulation)
     a_ai = s.contract('ai_simple.se')
     logger.register_address('a_ai', a_ai)
-    b_ai = s.contract('ai_two.se')
+    #b_ai = s.contract('ai_two.se')
+    b_ai = s.contract('ai_simple.se')
     logger.register_address('b_ai', b_ai)
 
     winner = s.send(tester.k0, simulation, 0, data=[a_ai, b_ai])

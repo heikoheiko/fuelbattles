@@ -64,6 +64,7 @@ code:
     call(debug, ["sorting redist_sorted"], 1)
 
     sg = call(quicksort_pairs, redist_sorted, ncells*2, ncells*2)
+    call(debug, sg, ncells*2)
     i = 0
     while i < ncells:
         v = sg[i * 2]

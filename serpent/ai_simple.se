@@ -33,17 +33,17 @@ code:
         cell = msg.data[redistribution_grid_offset + i*2 + 1]
         value = msg.data[redistribution_grid_offset + i*2]
         if value: # quick_sort bug
-            #call(debug, ["candidate", i, cell, value], 4)
+            call(debug, ["candidate", i, cell, value], 4)
             if !msg.data[grid_offset + cell]: # not here yet
                 # check if it's reachable
                 neighbours = call(get_neighbours, [cell, cols, rows], 3, 5)
                 num_neighbours = neighbours[0]
                 j = 0
-                #call(debug, ["neighbours", num_neighbours,neighbours[0],neighbours[1],neighbours[2],neighbours[3]], 6)
+                call(debug, ["neighbours", num_neighbours,neighbours[0],neighbours[1],neighbours[2],neighbours[3]], 6)
                 while j < num_neighbours:
                     pos = neighbours[j+1]
                     fuel = msg.data[grid_offset + pos]
-                    #call(debug, ["check", pos, fuel], 3)
+                    call(debug, ["check", pos, fuel], 3)
                     if fuel > 1: # i.e 2
                         # move half of funds at cell
                         move = [pos, cell, fuel/2]
