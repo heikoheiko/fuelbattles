@@ -5,7 +5,7 @@ green, red, black = (terminal.colors[x] for x in ('GREEN', 'BLUE', 'BLACK'))
 
 def draw(sim_steps, cols, rows, a_grid, b_grid, redistribution_grid):
     screen = terminal.get_terminal(conEmu=False)
-    if sim_steps == 0:
+    if sim_steps < 2:
         screen.clear()
     screen.gotoXY(0, 0)
     a_fuel = sum(a_grid)

@@ -30,8 +30,8 @@ def format_debug(self, data):
                 v = words[4 + ncells * 2 + i*2]
                 c = words[4 + ncells * 2 + i*2 + 1]
                 redist[c] = v
-
-            ui.draw(sim_steps=0, cols=words[0], rows=words[1], a_grid=words[4:4+ncells],
+            self.sim_steps += 1
+            ui.draw(sim_steps=self.sim_steps, cols=words[0], rows=words[1], a_grid=words[4:4+ncells],
                 b_grid=words[4+ncells:4+ncells*2], redistribution_grid=redist)
 
 def log_receiver(self, name, data):
@@ -43,5 +43,6 @@ def log_receiver(self, name, data):
 testenv.Logger.log_receiver = log_receiver
 testenv.Logger.format_debug = format_debug
 testenv.logger = testenv.Logger()
+testenv.logger.sim_steps = 0
 
 pyethereum.processblock.pblogger.listeners = [testenv.logger.log_receiver]
