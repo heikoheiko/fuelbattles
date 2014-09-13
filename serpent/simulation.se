@@ -103,25 +103,24 @@ code:
         redistribution = 0 # value that is collected and redistributed
         sim_steps += 1
 
-        # call ais
-        gas = tx.gas
-
         # a_move = [move_from, move_to, move_amount]
         gas = a_fuel - sim_step_gas_used
         if gas <0:
             gas = 0
         call(debug, ["calling ai_a gas:", gas], 2)
+        pre_call_gas = tx.gas
         a_move = msg(gas, a_ai_address, 0, memory, memory_length, 3)
         call(debug, a_move, 3)
-        a_ai_gas_used = gas - tx.gas
+        a_ai_gas_used = pre_call_gas - tx.gas
         call(debug, ["ai_a move g,f,t,v", a_ai_gas_used, a_move[0], a_move[1], a_move[2]], 5)
         # b move
         gas = b_fuel - sim_step_gas_used
         if gas <0:
             gas = 0
         call(debug, ["calling ai_b gas:", gas], 2)
+        pre_call_gas = tx.gas
         b_move = msg(gas, b_ai_address, 0, memory, memory_length, 3)
-        b_ai_gas_used = gas - tx.gas - a_ai_gas_used
+        b_ai_gas_used = pre_call_gas - tx.gas
         call(debug, ["ai_b move g,f,t,v", b_ai_gas_used, b_move[0], b_move[1], b_move[2]], 5)
 
         player_data = [[a_grid, a_move, a_ai_gas_used, a_fuel], [b_grid, b_move, b_ai_gas_used, b_fuel]]
